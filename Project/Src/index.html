@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MangáLab - Streaming de Mangás</title>
+  
+  <!-- CSS principal do site -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="Assets/ICONS/Icon.png" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo">Mangá<span>Lab</span></div>
+
+    <nav class="nav">
+      <a href="#">Início</a>
+
+      <div class="nav-item">
+        <a href="#">Mangás</a>
+
+        <div class="submenu">
+          <a href="#">Ação</a>
+          <a href="#">Romance</a>
+          <a href="#">Terror</a>
+          <a href="#">Lançamentos</a>
+        </div>
+      </div>
+
+      <a href="#">Minha Lista</a>
+      <a href="#" data-action="conta">Conta</a>
+
+      <a href="https://github.com/C0lina" target="_blank" class="github-link" title="Meu GitHub" rel="noopener">
+        <img src="Assets/ICONS/githubIcon.png" alt="GitHub" width="24" height="24" />
+      </a>
+    </nav>
+
+
+    <!-- Barra de pesquisa -->
+    <div class="search-bar">
+      <input id="searchInput" type="text" placeholder="Pesquisar mangás, autores, tags..." autocomplete="off"
+        aria-label="Pesquisar" />
+    </div>
+  </header>
+
+  <!-- Painel de sugestões/resultado da busca -->
+  <div class="search-panel" id="searchPanel" role="region" aria-label="Resultados da pesquisa" aria-hidden="true">
+    <ul class="search-list" id="searchList" role="listbox" aria-live="polite" aria-relevant="additions text"></ul>
+    <div class="search-empty" id="searchEmpty" hidden>Nenhum resultado</div>
+  </div>
+
+  <!-- =========================
+       MAIN — Seção com prateleira horizontal
+       ========================= -->
+  <main>
+    <section class="section shelf" id="sec-recomendados">
+      <div class="shelf-head">
+        <h2>Mangás Recomendados</h2>
+      </div>
+      <div class="row">
+        <div class="row-track" id="track-recomendados"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================
+       OVERLAY de detalhes do mangá
+       ========================= -->
+  <div class="manga-overlay" id="mangaOverlay" aria-hidden="true" role="dialog">
+    <div class="overlay-content">
+      <button class="close-btn" id="closeOverlayBtn" aria-label="Fechar">✖</button>
+
+      <div class="overlay-header" id="overlayHeader">
+        <!-- Botão de favorito (toggle) -->
+        <button class="fav-btn" id="favBtn" aria-pressed="false" title="Adicionar aos favoritos">★</button>
+      </div>
+
+      <!-- Bloco de informações (preenchido via JSON) -->
+      <div class="overlay-title">
+        <h1 id="overlayTitle">--</h1>
+        <p id="overlayAuthor">Autor: --</p>
+        <p id="overlayStatus">Status: --</p>
+        <p id="overlayGenres">Gêneros: --</p>
+        <p id="overlaySynopsis">Sinopse: --</p>
+      </div>
+
+      <p class="overlay-subtitle">Selecione o capítulo</p>
+
+      <!-- Lista de capítulos (preenchida via JS/JSON) -->
+      <div class="chapter-list" id="chapterList"></div>
+    </div>
+  </div>
+
+  <!-- =========================
+       OVERLAYS: Conta / Cadastro / Perfil
+       ========================= -->
+
+  <!-- Login -->
+  <div class="account-overlay" id="accountOverlay" aria-hidden="true" role="dialog">
+    <div class="account-box">
+      <button class="close-btn" data-close="accountOverlay" aria-label="Fechar">✖</button>
+      <h2>Entrar na sua conta</h2>
+
+      <form class="account-form" id="loginForm">
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="Digite seu e-mail" required />
+        </div>
+        <div class="input-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" placeholder="Digite sua senha" required />
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">Entrar</button>
+        <p class="register-text">Não tem conta? <a href="#" data-switch="toRegister">Cadastre-se</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cadastro -->
+  <div class="register-overlay" id="registerOverlay" aria-hidden="true" role="dialog">
+    <div class="account-box">
+      <button class="close-btn" data-close="registerOverlay" aria-label="Fechar">✖</button>
+      <h2>Criar Conta</h2>
+
+      <form class="account-form" id="registerForm">
+        <div class="input-group">
+          <label for="regName">Nome</label>
+          <input type="text" id="regName" placeholder="Digite seu nome" required />
+        </div>
+        <div class="input-group">
+          <label for="regEmail">E-mail</label>
+          <input type="email" id="regEmail" placeholder="Digite seu e-mail" required />
+        </div>
+        <div class="input-group">
+          <label for="regPassword">Senha</label>
+          <input type="password" id="regPassword" placeholder="Crie uma senha" required />
+        </div>
+        <div class="input-group">
+          <label for="regConfirm">Confirmar Senha</label>
+          <input type="password" id="regConfirm" placeholder="Repita a senha" required />
+        </div>
+        
+        <button type="submit" class="login-btn">Cadastrar</button>
+        <p class="register-text">Já tem conta? <a href="#" data-switch="toLogin">Entrar</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Perfil -->
+  <div class="profile-overlay" id="profileOverlay" aria-hidden="true" role="dialog">
+    <div class="account-box profile-box">
+      <button class="close-btn" data-close="profileOverlay" aria-label="Fechar">✖</button>
+
+      <div class="profile-header">
+        <img src="Assets/ICONS/vectorPerson.png" alt="Avatar" class="profile-avatar" />
+        <h2 id="profileName">Usuário</h2>
+        <p id="profileEmail">email@exemplo.com</p>
+      </div>
+
+      <div class="profile-actions">
+        <button class="profile-btn" type="button">Editar Perfil</button>
+        <button class="logout-btn" id="logoutBtn" type="button">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       FOOTER
+       ========================= -->
+  <footer class="footer">
+    <p>&copy; 2026 MangáLab - Todos os direitos reservados</p>
+  </footer>
+
+  <!-- =========================
+       SCRIPTS
+       ========================= -->
+
+  <!-- 0) API/Auth (clássico) — precisa existir -->
+  <script src="back.js"></script>
+  <script src="js/auth-ui.js"></script>
+
+  <!-- 1) Catálogo: gera cards via JSON em #track-recomendados -->
+  <script type="module" src="js/catalog.js"></script>
+
+  <!-- 2) Módulo: busca (usa IDs do painel + data-* dos cards) -->
+  <script type="module">
+    import { initSearch, readCatalogFromDOM } from "./js/search.js";
+
+    // Ação ao abrir um item pela busca: simula clique no card correspondente
+    function onOpenItem(item) {
+      const card = document.querySelector(`.item[data-id="${item.id}"]`);
+      if (card) card.click();
+    }
+
+    // Filtro visual nos cards enquanto digita
+    function filterGrid(query) {
+      const s = (query || "").toLowerCase().trim();
+      document.querySelectorAll(".item").forEach((el) => {
+        if (!s) return el.classList.remove("dim");
+        const title = (el.dataset.title || "").toLowerCase();
+        const syn = (el.dataset.synopsis || "").toLowerCase();
+        const tags = (el.dataset.genres || el.dataset.tags || "").toLowerCase();
+        const ok = title.includes(s) || syn.includes(s) || tags.includes(s);
+        el.classList.toggle("dim", !ok);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initSearch({
+        getCatalog: readCatalogFromDOM,
+        onOpenItem,
+        filterGrid,
+      });
+    });
+  </script>
+
+  <!-- 3) Módulo: carrega detalhes do mangá (JSON) e preenche o overlay -->
+  <script type="module">
+    const JSON_URL = "./data/mangas.json";
+
+    const overlayHeader = document.getElementById("overlayHeader");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayAuthor = document.getElementById("overlayAuthor");
+    const overlayStatus = document.getElementById("overlayStatus");
+    const overlayGenres = document.getElementById("overlayGenres");
+    const overlaySynopsis = document.getElementById("overlaySynopsis");
+    const chapterList = document.getElementById("chapterList");
+    const favBtn = document.getElementById("favBtn");
+
+    // Util: favoritos mínimos (localStorage)
+    function loadFavs() {
+      try { return JSON.parse(localStorage.getItem("animplay_favs")) || {}; }
+      catch { return {}; }
+    }
+    function saveFavs(f) { localStorage.setItem("animplay_favs", JSON.stringify(f)); }
+    function setFavButton(mangaId) {
+      const isFav = !!loadFavs()[mangaId];
+      favBtn.classList.toggle("active", isFav);
+      favBtn.setAttribute("aria-pressed", isFav ? "true" : "false");
+      favBtn.title = isFav ? "Remover dos favoritos" : "Adicionar aos favoritos";
+    }
+    function toggleFav(mangaId, meta) {
+      const favs = loadFavs();
+      if (favs[mangaId]) delete favs[mangaId];
+      else favs[mangaId] = { id: mangaId, title: meta.title, cover: meta.cover || "", addedAt: Date.now(), lastCap: 1 };
+      saveFavs(favs);
+      setFavButton(mangaId);
+    }
+
+    async function getMangaById(id) {
+      const res = await fetch(JSON_URL);
+      if (!res.ok) throw new Error("Erro ao carregar JSON");
+      const list = await res.json();
+      return list.find((m) => String(m.id) === String(id));
+    }
+
+    async function loadMangaDetails(mangaId) {
+      try {
+        const m = await getMangaById(mangaId);
+        if (!m) return;
+
+        const bg = m.cover || "";
+        overlayHeader.style.backgroundImage =
+          `linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.65)), url('${bg}')`;
+
+        overlayTitle.textContent = m.title || "—";
+        overlayAuthor.textContent = `Autor: ${(m.authors || []).join(", ") || "—"}`;
+        overlayStatus.textContent = `Status: ${m.status || "—"}`;
+        overlayGenres.textContent = `Gêneros: ${(m.genres || []).join(", ") || "—"}`;
+        overlaySynopsis.textContent = `Sinopse: ${m.synopsis || "—"}`;
+
+        chapterList.innerHTML = "";
+
+        const chapters = Array.isArray(m.chapters) && m.chapters.length
+          ? m.chapters
+          : Array.from({ length: 5 }, (_, i) => ({ num: i + 1, name: `Capítulo ${i + 1}` }));
+
+        if (!chapters.length) {
+          chapterList.innerHTML = '<div class="no-chapters">Sem capítulos disponíveis</div>';
+        } else {
+          chapters.forEach((ch) => {
+            const div = document.createElement("div");
+            div.className = "chapter";
+            div.textContent = `${ch.num} — ${ch.name || "Capítulo"}`;
+            div.addEventListener("click", () => {
+              const params = new URLSearchParams({ manga: m.id, cap: ch.num });
+              window.location.href = `read.html?${params.toString()}`;
+            });
+            chapterList.appendChild(div);
+          });
+        }
+
+        setFavButton(m.id);
+        favBtn.onclick = () => toggleFav(m.id, { title: m.title, cover: bg });
+      } catch (err) {
+        console.error("Falha ao carregar mangá:", err);
+      }
+    }
+
+    window.loadMangaDetails = loadMangaDetails;
+  </script>
+
+  <!-- 4) Script clássico: overlay + prateleira (SEM mock de login/cadastro/logout) -->
+  <script>
+    // Abre/fecha overlay de mangá
+    function abrirOverlay(id) {
+      const el = document.getElementById("mangaOverlay");
+      el.classList.add("active");
+      el.setAttribute("aria-hidden", "false");
+      if (window.loadMangaDetails) window.loadMangaDetails(id);
+    }
+
+    function fecharOverlay() {
+      const el = document.getElementById("mangaOverlay");
+      el.classList.remove("active");
+      el.setAttribute("aria-hidden", "true");
+    }
+
+    document.getElementById("closeOverlayBtn").addEventListener("click", fecharOverlay);
+
+    // Delegação de clique: funciona com cards injetados via JS
+    document.addEventListener("click", (e) => {
+      const card = e.target.closest(".item");
+      if (!card) return;
+      const id = card.dataset.id;
+      if (id) abrirOverlay(id);
+    });
+
+    // Fechar overlays via botões com data-close
+    document.querySelectorAll(".close-btn[data-close]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-close");
+        const ov = document.getElementById(id);
+        if (!ov) return;
+        ov.classList.remove("active");
+        ov.setAttribute("aria-hidden", "true");
+      });
+    });
+
+    // Prateleira (setas + arrastar) — inicialização
+    function initShelves() {
+      document.querySelectorAll(".shelf").forEach((section) => {
+        const track = section.querySelector(".row-track");
+        const prev = section.querySelector(".shelf-btn.prev");
+        const next = section.querySelector(".shelf-btn.next");
+        if (!track) return;
+
+        function pageSize() {
+          const rowWidth = section.querySelector(".row")?.clientWidth || window.innerWidth;
+          const first = track.querySelector(".item");
+          if (!first) return rowWidth;
+          const cardW = first.clientWidth + 18; // gap = 18px
+          return Math.min(rowWidth, cardW * 4);
+        }
+
+        prev?.addEventListener("click", () => track.scrollBy({ left: -pageSize(), behavior: "smooth" }));
+        next?.addEventListener("click", () => track.scrollBy({ left: pageSize(), behavior: "smooth" }));
+
+        let isDown = false, startX = 0, scrollLeft = 0;
+        track.addEventListener("mousedown", (e) => {
+          isDown = true;
+          track.classList.add("dragging");
+          startX = e.pageX - track.offsetLeft;
+          scrollLeft = track.scrollLeft;
+        });
+        window.addEventListener("mouseup", () => { isDown = false; track.classList.remove("dragging"); });
+        track.addEventListener("mouseleave", () => { isDown = false; track.classList.remove("dragging"); });
+        track.addEventListener("mousemove", (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - track.offsetLeft;
+          track.scrollLeft = scrollLeft - (x - startX);
+        });
+      });
+    }
+
+    // expõe para ser chamado por catalog.js após injetar os cards
+    window.initShelves = initShelves;
+    document.addEventListener("DOMContentLoaded", initShelves);
+  </script>
+</body>
+
+</html>

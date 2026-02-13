@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <title>MangáLab — Leitor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="Assets/ICONS/Icon.png">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="read.css" />
+</head>
+
+<body>
+  <header class="reader-header" id="header">
+    <div class="logo">MangáLab</div>
+    <div class="chip hide-sm" id="mangaTitle">—</div>
+    <div class="chip" id="capChip">Cap —</div>
+    <div class="spacer"></div>
+    
+    <div class="ctrl">
+      <button class="btn" id="prevCapBtn" title="Capítulo anterior">◀ Cap</button>
+      <select class="select" id="capSelect" title="Ir para capítulo"></select>
+      <button class="btn" id="nextCapBtn" title="Próximo capítulo">Cap ▶</button>
+    </div>
+
+    <div class="ctrl">
+      <button class="toggle" id="snapToggle" title="Ativar/Desativar snap">🔒 Snap</button>
+      <button class="btn" id="fitWidthBtn" title="Ajuste por largura (W)">↔</button>
+      <button class="btn" id="fitHeightBtn" title="Ajuste estreito (H)">↕</button>
+      <button class="btn" id="zoomOutBtn" title="Zoom - (–)">−</button>
+      <button class="btn" id="zoomInBtn" title="Zoom + (+)">+</button>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="progress__bar" id="progressBar"></div>
+  </div>
+
+  <main class="reader" id="reader">
+    <div class="page-wrap" id="pageWrap">
+      <div class="skeleton" id="skeleton"></div>
+    </div>
+  </main>
+
+  <div class="nav-fab" id="fabs">
+    <button class="fab" id="prevPageBtn" title="Página anterior (←)">⟨</button>
+    <button class="fab" id="nextPageBtn" title="Próxima página (→)">⟩</button>
+  </div>
+
+  <!-- JS externo -->
+  <script src="read.js"></script>
+</body>
+
+</html>

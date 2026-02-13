@@ -1,0 +1,59 @@
+[
+  {
+    "id": "bluelock",
+    "title": "Blue Lock",
+    "authors": ["Muneyuki Kaneshiro", "Yusuke Nomura"],
+    "year": 2018,
+    "status": "Em andamento",
+    "genres": ["Esporte", "Ação", "Shounen"],
+    "synopsis": "Após a eliminação do Japão na Copa, nasce um projeto para encontrar o atacante mais egoísta e letal.",
+    "cover": "Assets/Capas/BlueLockM.jpg",
+    "firstChapter": 1,
+    "recommended": true,
+    "popular": true,
+    "chapters": [
+      { "num": 1, "name": "Sonho" },
+      { "num": 2, "name": "Entrando no Dormitório" },
+      { "num": 3, "name": "Monstro" },
+      { "num": 4, "name": "Agora ou Nunca" }
+    ]
+  },
+
+  {
+      "id": "senselife",
+      "title": "Sense Life",
+      "authors": ["Glitch Tellend"],
+      "year": 2020,
+      "status": "Em andamento",
+      "genres": ["Poderes", "Ação", "Shounen"],
+      "synopsis": "Sense Life é um mangá brasileiro sobre Noah, um jovem apático em busca de um sentido para a vida, que tem sua rotina virada de cabeça para baixo ao conhecer Kaleb, um usuário de drogas com uma recompensa por sua cabeça.",
+      "cover": "Assets/Capas/SenseLifeM.png",
+      "firstChapter": 1,
+      "recommended": true,
+      "popular": true,
+      "chapters": [
+        { "num": 1, "name": "Um acordo até a morte" },
+        { "num": 2, "name": "Os três tipos de amor" },
+        { "num": 3, "name": "DELETE" }
+      ]
+  },
+
+  {
+      "id": "jujutsukaisen",
+      "title": "Jujutsu Kaisen",
+      "authors": ["Gege Akutami"],
+      "year": 2018,
+      "status": "Finalizado",
+      "genres": ["Suspense", "Poderes", "Shounen"],
+      "synopsis": "Jujutsu Kaisen acompanha Yuji Itadori, um estudante com força física extraordinária que engole um dedo amaldiçoado para salvar amigos de espíritos malignos. Ele se torna hospedeiro de Ryomen Sukuna, a mais poderosa maldição, e entra no Colégio Técnico de Jujutsu de Tóquio para treinar e encontrar todos os dedos!",
+      "cover": "Assets/Capas/JujutsuKaisenM.png",
+      "firstChapter": 1,
+      "recommended": true,
+      "popular": true,
+      "chapters": [
+        { "num": 1, "name": "Ryomen Sukuna" },
+        { "num": 2, "name": "Execução Secreta" },
+        { "num": 3, "name": "Por mim Mesmo" }
+      ]
+    }
+]
