@@ -1015,3 +1015,446 @@ body::after {
   outline-offset: 6px;
   border-radius: 10px;
 }
+
+/* =========================================================
+   PATCH — refinamentos premium (colar no final do CSS)
+========================================================= */
+
+/* ---------- tokens extras (sem quebrar os atuais) ---------- */
+:root{
+  --focus: rgba(199, 155, 231, .55);
+  --glass: rgba(17, 17, 17, .78);
+  --glass-strong: rgba(17, 17, 17, .92);
+  --ring: 0 0 0 4px rgba(199,155,231,.18);
+  --shadow-1: 0 10px 30px rgba(0,0,0,.45);
+  --shadow-2: 0 18px 50px rgba(0,0,0,.58);
+  --ease: cubic-bezier(.2,.8,.2,1);
+}
+
+/* ---------- seleção de texto + foco consistente ---------- */
+::selection{ background: rgba(199,155,231,.35); color: #fff; }
+
+a, button, input, .item, .chapter, .chapter-btn{
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---------- scrollbars consistentes ---------- */
+*{
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a transparent;
+}
+*::-webkit-scrollbar{ width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #2a2a2a, #1f1f1f);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-track{ background: transparent; }
+
+/* ---------- header: mais “glass”, melhor alinhamento ---------- */
+.header{
+  background: var(--glass);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.logo{
+  text-shadow: 0 10px 30px rgba(167,76,167,.18);
+}
+
+/* nav links: clique/estado ativo melhor */
+.nav a{
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.nav a:active{ transform: translateY(0); }
+.nav a:hover{ color: #fff; }
+.nav a:hover::after{ transform: scaleX(1); }
+
+/* ---------- Search: mais moderno + ícone fake ---------- */
+.search-bar{
+  position: relative;
+}
+.search-bar::before{
+  content: "⌕";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: .7;
+  pointer-events: none;
+}
+.search-bar input{
+  padding-left: 34px;
+  width: clamp(200px, 22vw, 320px);
+  background: rgba(26,26,26,.85);
+}
+.search-bar input::placeholder{ color: rgba(255,255,255,.55); }
+.search-bar input:hover{
+  border-color: rgba(199,155,231,.35);
+}
+
+/* ---------- painel de busca: animação suave ---------- */
+.search-panel{
+  background: var(--glass-strong);
+  backdrop-filter: blur(10px) saturate(140%);
+  transform-origin: top;
+  animation: searchDrop .18s var(--ease) both;
+}
+@keyframes searchDrop{
+  from{ opacity: 0; transform: translateY(-6px) scale(.99); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+.search-item{
+  border: 1px solid transparent;
+}
+.search-item:hover,
+.search-item[aria-selected="true"]{
+  border-color: rgba(199,155,231,.22);
+  box-shadow: 0 8px 22px rgba(0,0,0,.35);
+}
+
+/* ---------- section: espaçamento mais “app” ---------- */
+.section{
+  padding: calc(var(--header-h) + 34px) 50px 56px;
+}
+.section h2{
+  font-size: clamp(20px, 2.2vw, 28px);
+}
+.shelf-head{
+  gap: 16px;
+}
+
+/* ---------- shelf/row: rolagem mais suave + snap melhor ---------- */
+.row-track{
+  padding: 8px 2px 10px;
+  scroll-padding-left: 10px;
+}
+.row-track.dragging{ cursor: grabbing; }
+.row-track:not(.dragging){ cursor: grab; }
+
+/* ---------- Card: overlay de texto + borda neon sutil ---------- */
+.item{
+  position: relative;
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+}
+
+.item::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius: var(--radius-md);
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(199,155,231,.22), rgba(138,43,226,.08), transparent 60%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events:none;
+  opacity:.85;
+}
+
+.item:hover{
+  box-shadow: 0 16px 44px rgba(0,0,0,.55), 0 10px 28px var(--shadow);
+}
+
+/* deixa imagem mais “cinema” no hover */
+.item img{
+  filter: saturate(1.05) contrast(1.02);
+}
+.item:hover img{
+  filter: saturate(1.12) contrast(1.06);
+}
+
+/* overlay gradiente no rodapé do card (pra texto ficar legível) */
+.item .card-overlay{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  padding: 12px 12px 10px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,.78));
+  pointer-events:none;
+}
+.item .card-title{
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 8px 20px rgba(0,0,0,.45);
+}
+.item .card-sub{
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(255,255,255,.78);
+}
+
+/* se seu catalog.js ainda não cria .card-overlay, não quebra nada. */
+
+/* ---------- Minha Lista (grid) usando cards compatíveis ---------- */
+.grid .item{
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+.grid .item img{ height: 240px; }
+
+/* ---------- Overlay: mais “modal premium” + scroll interno limpo ---------- */
+.manga-overlay{
+  background: rgba(10,10,10,.88);
+  backdrop-filter: blur(8px);
+}
+
+.overlay-content{
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: var(--shadow-2);
+}
+
+/* header do overlay: brilho suave */
+.overlay-header::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(600px 220px at 20% 10%, rgba(199,155,231,.18), transparent 55%);
+  pointer-events:none;
+  z-index: 1;
+}
+
+/* botões overlay com estado pressed */
+.close-btn:active,
+.fav-btn:active{
+  transform: scale(.96);
+}
+
+/* capítulos: mais “lista” e menos bloco pesado */
+.chapter,
+.chapter-btn{
+  background: rgba(26,26,26,.92);
+}
+.chapter:hover,
+.chapter-btn:hover{
+  box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+
+/* ---------- Acessibilidade: targets maiores no mobile ---------- */
+@media (max-width: 768px){
+  .nav{ gap: 10px; }
+  .nav a{ padding: 10px 10px; }
+  .search-bar input{ width: min(62vw, 320px); }
+}
+
+/* ---------- Header responsivo (sem quebrar, só melhora) ---------- */
+@media (max-width: 640px){
+  .header{
+    padding: 10px 14px;
+  }
+  .logo{ font-size: 22px; }
+  .nav{
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar{ display:none; }
+}
+
+/* ---------- Redução de movimento já respeita, mas deixa transições suaves ---------- */
+@media (prefers-reduced-motion: reduce){
+  .search-panel{ animation: none; }
+  .item, .item img, .fav-btn, .close-btn{ transition: none !important; }
+}
+
+/* ==============================
+   Perfil (upgrade)
+============================== */
+
+/* caixa do perfil um pouco maior e mais “card” */
+.profile-box{
+  max-width: 520px;
+  width: min(92vw, 520px);
+  padding: 26px 26px 18px;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,.06);
+  background: rgba(17,17,17,.92);
+  backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: 0 18px 55px rgba(0,0,0,.60), 0 0 0 1px rgba(199,155,231,.08) inset;
+}
+
+/* header do perfil */
+.profile-header{
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 8px 14px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, rgba(199,155,231,.12), rgba(17,17,17,0) 60%);
+  border: 1px solid rgba(255,255,255,.05);
+}
+
+/* avatar com “ring” */
+.profile-avatar-wrap{
+  position: relative;
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 10px 26px rgba(0,0,0,.45);
+  overflow: hidden;
+}
+
+.profile-avatar{
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  opacity: .95;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+}
+
+/* status dot (online) */
+.profile-status-dot{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #37d67a;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.65), 0 0 18px rgba(55,214,122,.35);
+}
+
+/* identidade */
+.profile-identity h2{
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+  background: linear-gradient(90deg, var(--p-0), var(--p-1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.profile-identity p{
+  margin-top: 4px;
+  margin-bottom: 10px;
+  color: rgba(255,255,255,.70);
+  font-size: 13px;
+}
+
+/* badges */
+.profile-badges{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge{
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(199,155,231,.12);
+  border: 1px solid rgba(199,155,231,.22);
+  color: rgba(255,255,255,.9);
+}
+
+.badge-outline{
+  background: transparent;
+  border-color: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.75);
+}
+
+/* stats */
+.profile-stats{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 14px 0 12px;
+}
+
+.stat{
+  padding: 12px 12px;
+  border-radius: var(--radius-lg);
+  background: rgba(26,26,26,.92);
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+}
+
+.stat-num{
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: .3px;
+}
+
+.stat-label{
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: rgba(255,255,255,.68);
+}
+
+/* ações */
+.profile-actions{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.profile-btn,
+.logout-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-ic{
+  font-size: 16px;
+  opacity: .9;
+}
+
+/* rodapé */
+.profile-foot{
+  padding: 14px 6px 0;
+  border-top: 1px solid rgba(255,255,255,.06);
+  margin-top: 14px;
+}
+
+.profile-foot .muted{
+  opacity: .7;
+}
+
+/* responsivo */
+@media (max-width: 480px){
+  .profile-header{
+    grid-template-columns: 72px 1fr;
+  }
+  .profile-avatar-wrap{
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+  }
+  .profile-avatar{
+    width: 54px;
+    height: 54px;
+  }
+  .profile-actions{
+    grid-template-columns: 1fr;
+  }
+  .profile-stats{
+    grid-template-columns: 1fr;
+  }
+}

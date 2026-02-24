@@ -7,7 +7,7 @@
   <title>MangáLab - Streaming de Mangás</title>
   
   <!-- CSS principal do site -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="Assets/ICONS/Icon.png" />
@@ -18,27 +18,25 @@
     <div class="logo">Mangá<span>Lab</span></div>
 
     <nav class="nav">
-      <a href="#">Início</a>
+      <a href="#" data-action="home">Início</a>
 
       <div class="nav-item">
         <a href="#">Mangás</a>
-
         <div class="submenu">
-          <a href="#">Ação</a>
-          <a href="#">Romance</a>
-          <a href="#">Terror</a>
+          <a href="#">Shonen</a>
+          <a href="#">Seinen</a>
+          <a href="#">Shoujo</a>
           <a href="#">Lançamentos</a>
         </div>
       </div>
 
-      <a href="#">Minha Lista</a>
+      <a href="#" data-action="mylist">Minha Lista</a>
       <a href="#" data-action="conta">Conta</a>
 
       <a href="https://github.com/C0lina" target="_blank" class="github-link" title="Meu GitHub" rel="noopener">
         <img src="Assets/ICONS/githubIcon.png" alt="GitHub" width="24" height="24" />
       </a>
     </nav>
-
 
     <!-- Barra de pesquisa -->
     <div class="search-bar">
@@ -54,9 +52,24 @@
   </div>
 
   <!-- =========================
-       MAIN — Seção com prateleira horizontal
+       MAIN
        ========================= -->
   <main>
+    <!-- Minha Lista (aba/tela) -->
+    <section class="section" id="sec-mylist" hidden>
+      <div class="shelf-head">
+        <h2>Minha Lista</h2>
+        <p class="muted">Seus mangás favoritados</p>
+      </div>
+
+      <div id="myListGrid" class="grid"></div>
+
+      <div id="myListEmpty" class="empty" hidden>
+        Você ainda não favoritou nenhum mangá.
+      </div>
+    </section>
+
+    <!-- Recomendados (home) -->
     <section class="section shelf" id="sec-recomendados">
       <div class="shelf-head">
         <h2>Mangás Recomendados</h2>
@@ -144,7 +157,7 @@
           <label for="regConfirm">Confirmar Senha</label>
           <input type="password" id="regConfirm" placeholder="Repita a senha" required />
         </div>
-        
+
         <button type="submit" class="login-btn">Cadastrar</button>
         <p class="register-text">Já tem conta? <a href="#" data-switch="toLogin">Entrar</a></p>
       </form>
@@ -157,14 +170,48 @@
       <button class="close-btn" data-close="profileOverlay" aria-label="Fechar">✖</button>
 
       <div class="profile-header">
-        <img src="Assets/ICONS/vectorPerson.png" alt="Avatar" class="profile-avatar" />
-        <h2 id="profileName">Usuário</h2>
-        <p id="profileEmail">email@exemplo.com</p>
+        <div class="profile-avatar-wrap">
+          <img src="Assets/ICONS/vectorPerson.png" alt="Avatar" class="profile-avatar" />
+          <span class="profile-status-dot" title="Online"></span>
+        </div>
+
+        <div class="profile-identity">
+          <h2 id="profileName">Usuário</h2>
+          <p id="profileEmail">email@exemplo.com</p>
+
+          <div class="profile-badges">
+            <span class="badge">Leitor</span>
+            <span class="badge badge-outline">MangáLab</span>
+          </div>
+        </div>
       </div>
 
+      <!-- stats (simples, mas dá muita cara de app) -->
+      <div class="profile-stats" aria-label="Estatísticas do usuário">
+        <div class="stat">
+          <span class="stat-num" id="statFavs">0</span>
+          <span class="stat-label">Favoritos</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="statContinue">0</span>
+          <span class="stat-label">Continuar</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="statLast">—</span>
+          <span class="stat-label">Último acesso</span>
+        </div>
+      </div>
+      
       <div class="profile-actions">
-        <button class="profile-btn" type="button">Editar Perfil</button>
-        <button class="logout-btn" id="logoutBtn" type="button">Sair</button>
+        <button class="profile-btn" type="button" id="editProfileBtn">
+          <span class="btn-ic" aria-hidden="true">✎</span>
+          Editar Perfil
+        </button>
+        
+        <button class="logout-btn" id="logoutBtn" type="button">
+          <span class="btn-ic" aria-hidden="true">⎋</span>
+          Sair
+        </button>
       </div>
     </div>
   </div>
@@ -187,17 +234,21 @@
   <!-- 1) Catálogo: gera cards via JSON em #track-recomendados -->
   <script type="module" src="js/catalog.js"></script>
 
+  <!-- Navegação de views (home <-> mylist) -->
+  <script type="module">
+    import { initNavViews } from "./js/nav-views.js";
+    document.addEventListener("DOMContentLoaded", initNavViews);
+  </script>
+
   <!-- 2) Módulo: busca (usa IDs do painel + data-* dos cards) -->
   <script type="module">
     import { initSearch, readCatalogFromDOM } from "./js/search.js";
 
-    // Ação ao abrir um item pela busca: simula clique no card correspondente
     function onOpenItem(item) {
       const card = document.querySelector(`.item[data-id="${item.id}"]`);
       if (card) card.click();
     }
 
-    // Filtro visual nos cards enquanto digita
     function filterGrid(query) {
       const s = (query || "").toLowerCase().trim();
       document.querySelectorAll(".item").forEach((el) => {
@@ -232,22 +283,32 @@
     const chapterList = document.getElementById("chapterList");
     const favBtn = document.getElementById("favBtn");
 
-    // Util: favoritos mínimos (localStorage)
     function loadFavs() {
       try { return JSON.parse(localStorage.getItem("animplay_favs")) || {}; }
       catch { return {}; }
     }
     function saveFavs(f) { localStorage.setItem("animplay_favs", JSON.stringify(f)); }
+
+    // expõe uma função global opcional (útil pra mylist.js sincronizar)
+    window.updateFavButton = (mangaId) => setFavButton(mangaId);
+
     function setFavButton(mangaId) {
       const isFav = !!loadFavs()[mangaId];
       favBtn.classList.toggle("active", isFav);
       favBtn.setAttribute("aria-pressed", isFav ? "true" : "false");
       favBtn.title = isFav ? "Remover dos favoritos" : "Adicionar aos favoritos";
     }
+
     function toggleFav(mangaId, meta) {
       const favs = loadFavs();
       if (favs[mangaId]) delete favs[mangaId];
-      else favs[mangaId] = { id: mangaId, title: meta.title, cover: meta.cover || "", addedAt: Date.now(), lastCap: 1 };
+      else favs[mangaId] = {
+        id: mangaId,
+        title: meta.title,
+        cover: meta.cover || "",
+        addedAt: Date.now(),
+        lastCap: 1
+      };
       saveFavs(favs);
       setFavButton(mangaId);
     }
@@ -305,15 +366,15 @@
     window.loadMangaDetails = loadMangaDetails;
   </script>
 
-  <!-- 4) Script clássico: overlay + prateleira (SEM mock de login/cadastro/logout) -->
+  <!-- 4) Script clássico: overlay + prateleira -->
   <script>
-    // Abre/fecha overlay de mangá
     function abrirOverlay(id) {
       const el = document.getElementById("mangaOverlay");
       el.classList.add("active");
       el.setAttribute("aria-hidden", "false");
       if (window.loadMangaDetails) window.loadMangaDetails(id);
     }
+    window.abrirOverlay = abrirOverlay;
 
     function fecharOverlay() {
       const el = document.getElementById("mangaOverlay");
@@ -323,7 +384,6 @@
 
     document.getElementById("closeOverlayBtn").addEventListener("click", fecharOverlay);
 
-    // Delegação de clique: funciona com cards injetados via JS
     document.addEventListener("click", (e) => {
       const card = e.target.closest(".item");
       if (!card) return;
@@ -331,7 +391,6 @@
       if (id) abrirOverlay(id);
     });
 
-    // Fechar overlays via botões com data-close
     document.querySelectorAll(".close-btn[data-close]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-close");
@@ -342,7 +401,6 @@
       });
     });
 
-    // Prateleira (setas + arrastar) — inicialização
     function initShelves() {
       document.querySelectorAll(".shelf").forEach((section) => {
         const track = section.querySelector(".row-track");
@@ -354,7 +412,7 @@
           const rowWidth = section.querySelector(".row")?.clientWidth || window.innerWidth;
           const first = track.querySelector(".item");
           if (!first) return rowWidth;
-          const cardW = first.clientWidth + 18; // gap = 18px
+          const cardW = first.clientWidth + 18;
           return Math.min(rowWidth, cardW * 4);
         }
 
@@ -379,7 +437,6 @@
       });
     }
 
-    // expõe para ser chamado por catalog.js após injetar os cards
     window.initShelves = initShelves;
     document.addEventListener("DOMContentLoaded", initShelves);
   </script>

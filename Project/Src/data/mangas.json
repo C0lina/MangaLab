@@ -55,5 +55,24 @@
         { "num": 2, "name": "Execução Secreta" },
         { "num": 3, "name": "Por mim Mesmo" }
       ]
+    },
+
+    {
+      "id": "20thboys",
+      "title": "20th Century Boys",
+      "authors": ["Naoki Urasawa"],
+      "year": 2018,
+      "status": "Finalizado",
+      "genres": ["Suspense", "Dominação Mundial", "Ficção Científica"],
+      "synopsis": "Os Garotos do Século XX é um mangá de suspense e ficção científica que segue um grupo de amigos de infância que se veem envolvidos em uma conspiração global. A história alterna entre o passado, onde os protagonistas criam um mundo imaginário, e o presente, onde eles enfrentam uma ameaça real que pode destruir a humanidade.",
+      "cover": "Assets/Capas/20thcbM.jpg",
+      "firstChapter": 1,
+      "recommended": true,
+      "popular": true,
+      "chapters": [
+        { "num": 1, "name": "Amigo" },
+        { "num": 2, "name": "Karaokê" },
+        { "num": 3, "name": "O Garoto que Comprou um Violão" }
+      ]
     }
 ]

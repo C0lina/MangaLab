@@ -74,7 +74,7 @@ async function onCardClick(e) {
     const data = await loadMangaData(id, { title, bg });
     overlayHeader.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.65)), url('${data.bg}')`;
     overlayTitle.textContent = data.title;
-    renderChapters(data.chapters, id); // ✅ passa o id aqui
+    renderChapters(data.chapters, id); 
 }
 
 // Liga os cliques nos cards

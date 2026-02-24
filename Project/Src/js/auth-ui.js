@@ -27,8 +27,14 @@ function abrirConta() { accountOverlay.classList.add("active"); accountOverlay.s
 function fecharConta() { accountOverlay.classList.remove("active"); accountOverlay.setAttribute("aria-hidden", "true"); }
 function abrirCadastro() { registerOverlay.classList.add("active"); registerOverlay.setAttribute("aria-hidden", "false"); }
 function fecharCadastro() { registerOverlay.classList.remove("active"); registerOverlay.setAttribute("aria-hidden", "true"); }
-function abrirPerfil() { profileOverlay.classList.add("active"); profileOverlay.setAttribute("aria-hidden", "false"); }
-function fecharPerfil() { profileOverlay.classList.remove("active"); profileOverlay.setAttribute("aria-hidden", "true"); }
+function abrirPerfil() {
+  profileOverlay.classList.add("active");
+  profileOverlay.setAttribute("aria-hidden", "false");
+
+  // Atualiza "último acesso" + stats sempre que abrir
+  localStorage.setItem("animplay_last_access", String(Date.now()));
+  refreshProfileStats();
+}
 
 // UI: preencher perfil
 function renderProfile(user) {
@@ -199,3 +205,44 @@ logoutBtn.addEventListener("click", () => {
 
 // Inicialização
 document.addEventListener("DOMContentLoaded", restoreSession);
+
+function countFavs() {
+  try {
+    const favs = JSON.parse(localStorage.getItem("animplay_favs")) || {};
+    return Object.keys(favs).length;
+  } catch {
+    return 0;
+  }
+}
+
+function countContinue() {
+  try {
+    const p = JSON.parse(localStorage.getItem("animplay_progress")) || {};
+    return Object.keys(p).length;
+  } catch {
+    return 0;
+  }
+}
+
+function formatLastAccess() {
+  const t = Number(localStorage.getItem("animplay_last_access") || Date.now());
+  const d = new Date(t);
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+}
+
+// chame quando abrir o perfil
+function refreshProfileStats() {
+  const elFav = document.getElementById("statFavs");
+  const elCon = document.getElementById("statContinue");
+  const elLast = document.getElementById("statLast");
+  if (elFav) elFav.textContent = String(countFavs());
+  if (elCon) elCon.textContent = String(countContinue());
+  if (elLast) elLast.textContent = formatLastAccess();
+}
+
+// Se favoritos/progresso forem alterados em outra aba, mantém perfil “vivo”
+window.addEventListener("storage", (e) => {
+  if (e.key === "animplay_favs" || e.key === "animplay_progress" || e.key === "animplay_last_access") {
+    refreshProfileStats();
+  }
+});

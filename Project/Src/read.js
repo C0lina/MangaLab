@@ -32,7 +32,7 @@ const LOCAL = {
   "jujutsukaisen": {
     title: "Jujutsu Kaisen",
     chapters: {
-      1: { pages: genSeq("Assets/MANGAS/JUJUTSU CAP1", 7, "webp") }
+      1: { pages: genSeq("Assets/MANGAS/JUJUTSU KAISEN CAP1", 7, "png") }
     }
   }
 };
